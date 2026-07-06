@@ -14,7 +14,8 @@ bot = telebot.TeleBot(TELEGRAM_TOKEN)
 # 📋 Parametri fissi di gioco impostati
 STAKE_FISSO = 5.0 
 QUOTA_MINIMA = 1.50
-
+STAKE_DEFAULT = 5.0
+TELEGRAM_USER_ID = "IL_TUO_ID_NUMERICO" # 5198316704
 # 🌍 Dizionario dei campionati ufficiali monitorati dal bot
 CAMPIONATI_MONITORAGGIO = {
     "A_MASSIMA_LIQUIDITA": [
@@ -110,8 +111,8 @@ def analizza_mercati():
         print(f"📋 [ANALISI -2h] {m['partita']} | Quota Iniziale: {quota_iniziale} -> Quota Attuale: {m['quota_totale']}")
 
         # Filtro rigido sulla quota minima impostata (1.50)
-        if m['quota_totale'] < config.QUOTA_MINIMA:
-            print(f"⚠️ Scartata: Quota {m['quota_totale']} inferiore al minimo di {config.QUOTA_MINIMA}")
+        if m['quota_totale'] < QUOTA_MINIMA:
+            print(f"⚠️ Scartata: Quota {m['quota_totale']} inferiore al minimo di {QUOTA_MINIMA}")
             continue
 
         # Prepariamo la notifica approvata
@@ -122,7 +123,7 @@ def analizza_mercati():
             f"⚽ Partita: {m['partita']}\n"
             f"📊 Mercato: {m['mercato']}\n"
             f"📈 Quota Migliore: {m['quota_totale']} ({m.get('bookmaker', 'Planetwin365')})\n"
-            f"💰 Stake Base: {config.STAKE_DEFAULT}€\n\n"
+            f"💰 Stake Base: {STAKE_DEFAULT}€\n\n"
             f"🤔 Confermi la registrazione di questa giocata?"
         )
 
@@ -134,7 +135,7 @@ def analizza_mercati():
             InlineKeyboardButton("💰 MODIFICA STAKE", callback_data="modifica_stake")
         )
 
-        bot.send_message(config.TELEGRAM_USER_ID, testo_notifica, parse_mode="Markdown", reply_markup=markup)
+        bot.send_message(TELEGRAM_USER_ID, testo_notifica, parse_mode="Markdown", reply_markup=markup)
         print(f"✅ Messaggio di conferma inviato a Marco per {m['partita']}.")
 
 # --- GESTIONE INTERATTIVA PULSANTI ---
@@ -173,10 +174,10 @@ def avvia_monitoraggio():
     invia_notifica_avvio = (
         f"🤖 *Bot Sharp Bettors Attivo!*\n"
         f"Il motore è in funzione sul PC. Configurazione caricata:\n"
-        f"• Quota Minima: {config.QUOTA_MINIMA}\n"
-        f"• Stake Predefinito: {config.STAKE_DEFAULT}€"
+        f"• Quota Minima: {QUOTA_MINIMA}\n"
+        f"• Stake Predefinito: {STAKE_DEFAULT}€"
     )
-    bot.send_message(config.TELEGRAM_USER_ID, invia_notifica_avvio, parse_mode="Markdown")
+    bot.send_message(TELEGRAM_USER_ID, invia_notifica_avvio, parse_mode="Markdown")
 
     # Eseguiamo subito il ciclo di analisi per testare la nuova logica temporale
     analizza_mercati()
