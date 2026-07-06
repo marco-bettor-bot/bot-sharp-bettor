@@ -6,9 +6,10 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime, timedelta
 
 # 🔒 Recupero sicuro dal cloud di Render (senza usare il file config)
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
-
+if not TELEGRAM_TOKEN:
+    raise ValueError("ERRORE: TELEGRAM_BOT_TOKEN non trovato nelle variabili d'ambiente!")
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
 # 📋 Parametri fissi di gioco impostati
