@@ -193,32 +193,19 @@ def avvia_monitoraggio():
     # Eseguiamo subito il ciclo di analisi per testare la nuova logica temporale
     analizza_mercati()
 
-   if __name__ == "__main__":
+   # 4. Mantieni vivo e avvia il server
+if __name__ == "__main__":
     from threading import Thread
-    import time
-    import signal
-    import os
 
-    # 1. Avvia il server web su una porta specifica
-    port = int(os.environ.get('PORT', 10000))
-
+    # Funzione per avviare il server Flask
     def run_flask():
-        # Aggiungiamo 'debug=False' e 'use_reloader=False' per stabilità
-        app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
+        # Usa la porta fornita da Render o la 10000 di default
+        port = int(os.environ.get('PORT', 10000))
+        app.run(host='0.0.0.0', port=port)
 
-    server_thread = Thread(target=run_flask)
-    server_thread.daemon = True
-    server_thread.start()
+    # Avvia il server in un thread separato
+    flask_thread = Thread(target=run_flask)
+    flask_thread.start()
 
-    # 2. Aspetta che il server sia pronto
-    time.sleep(3)
-
-    # 3. Imposta il Webhook
-    bot.remove_webhook()
-    webhook_url = f'https://bot-sharp-bettor.onrender.com/{TELEGRAM_TOKEN}'
-    bot.set_webhook(url=webhook_url)
-
-    print(f"Server avviato sulla porta {port} e Webhook impostato.")
-
-    # 4. Mantieni vivo
-    signal.pause()
+    # Avvia il polling del bot Telegram
+    bot.infinity_polling()
