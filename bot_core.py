@@ -4,6 +4,12 @@ import telebot
 import os
 from flask import Flask
 from threading import Thread
+def avvia_bot_background():
+    # Qui il tuo bot resta in ascolto senza bloccare il server
+    bot.infinity_polling()
+
+# Avviamo il bot in un thread separato subito all'inizio
+threading.Thread(target=avvia_bot_background, daemon=True).start()
 app = Flask(__name__)
 @app.route('/')
 def home():
@@ -193,7 +199,14 @@ def avvia_monitoraggio():
     # Eseguiamo subito il ciclo di analisi per testare la nuova logica temporale
     analizza_mercati()
 
- # Avvio ottimizzato per il cloud di Render
+ # ... (tutto il resto del tuo codice rimane invariato)
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Bot Sharp Bettor Online"
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
