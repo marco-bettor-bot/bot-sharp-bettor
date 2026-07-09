@@ -193,15 +193,7 @@ def avvia_monitoraggio():
     # Eseguiamo subito il ciclo di analisi per testare la nuova logica temporale
     analizza_mercati()
 
-   # --- AVVIO SICURO PER RENDER ---
+ # Avvio ottimizzato per il cloud di Render
 if __name__ == "__main__":
-    import threading
-
-    # Avvia il bot in un thread separato
-    bot_thread = threading.Thread(target=bot.infinity_polling)
-    bot_thread.daemon = True
-    bot_thread.start()
-
-    # Avvia Flask sul processo principale (richiesto da Gunicorn)
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
