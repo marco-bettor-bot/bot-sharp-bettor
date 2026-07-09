@@ -193,19 +193,15 @@ def avvia_monitoraggio():
     # Eseguiamo subito il ciclo di analisi per testare la nuova logica temporale
     analizza_mercati()
 
-   # 4. Mantieni vivo e avvia il server
-if __name__ == "__main__":
+   if __name__ == "__main__":
+    # Avvia il bot in un thread separato
     from threading import Thread
+    def run_bot():
+        bot.infinity_polling()
 
-    # Funzione per avviare il server Flask
-    def run_flask():
-        # Usa la porta fornita da Render o la 10000 di default
-        port = int(os.environ.get('PORT', 10000))
-        app.run(host='0.0.0.0', port=port)
+    bot_thread = Thread(target=run_bot)
+    bot_thread.start()
 
-    # Avvia il server in un thread separato
-    flask_thread = Thread(target=run_flask)
-    flask_thread.start()
-
-    # Avvia il polling del bot Telegram
-    bot.infinity_polling()
+    # Il server Flask deve essere nel processo principale
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
