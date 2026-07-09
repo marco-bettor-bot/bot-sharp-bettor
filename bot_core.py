@@ -193,15 +193,17 @@ def avvia_monitoraggio():
     # Eseguiamo subito il ciclo di analisi per testare la nuova logica temporale
     analizza_mercati()
 
-   if __name__ == "__main__":
-    # Avvia il bot in un thread separato
-    from threading import Thread
-    def run_bot():
-        bot.infinity_polling()
+   # --- CODICE DEFINITIVO PER RENDER ---
+if __name__ == "__main__":
+    import threading
 
-    bot_thread = Thread(target=run_bot)
+    # Avviamo il bot Telegram in un thread separato
+    # così non blocca il processo principale
+    bot_thread = threading.Thread(target=bot.infinity_polling)
+    bot_thread.daemon = True
     bot_thread.start()
 
-    # Il server Flask deve essere nel processo principale
+    # Avviamo il server Flask sul processo principale
+    # richiesto da Gunicorn per il corretto funzionamento
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
