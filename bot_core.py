@@ -120,14 +120,10 @@ def gestisci_bottoni(call):
 
 # --- AVVIO ---
 if __name__ == "__main__":
-    if RENDER_EXTERNAL_URL:
-        bot.remove_webhook()
-        time.sleep(1)
-        bot.set_webhook(url=f"{RENDER_EXTERNAL_URL}/{TELEGRAM_TOKEN}")
+    # Configurazione Webhook
+    bot.remove_webhook()
+    bot.set_webhook(url="https://bot-sharp-bettor.onrender.com/" + os.environ.get("TELEGRAM_TOKEN"))
     
-    # Avvio analisi in background
-    threading.Thread(target=analizza_mercati, daemon=True).start()
-    
-    # Avvio Flask
-    port = int(os.environ.get('PORT', 10000))
-    app.run(host='0.0.0.0', port=port)
+    # Questo server web (Flask) viene gestito da Gunicorn, non serve app.run()
+    # Ma lasciamolo solo se avviato localmente
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))
